@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { runPipeline } from "./lib/pipeline";
 
 dotenv.config();
 
@@ -15,7 +16,11 @@ app.get("/health", (_req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Backend server running on port ${PORT}`);
+  console.log(`[server] running on port ${PORT}`);
+
+  // Run immediately on startup, then every 5 seconds
+  runPipeline();
+  setInterval(runPipeline, 5000);
 });
 
 export default app;

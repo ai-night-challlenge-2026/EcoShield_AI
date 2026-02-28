@@ -1,0 +1,36 @@
+services:
+  mongo:
+    image: mongo:8
+    container_name: ecoshield_mongo
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - ecoshield_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: ecoshield_redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ecoshield_net
+
+volumes:
+  mongo_data:
+  redis_data:
+
+networks:
+  ecoshield_net:
+    driver: bridge
